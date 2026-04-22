@@ -92,7 +92,13 @@ async function calculate() {
         return { location: b.getAttribute('data-loc'), stopover: false };
     });
 
-    ds.route({ origin: locs[0], destination: locs[locs.length-1], waypoints: tunnelWays, travelMode: 'DRIVING' }, (res, stat) => {
+    ds.route({ 
+        origin: locs[0], 
+        destination: locs[locs.length-1], 
+        waypoints: tunnelWays, 
+        travelMode: 'DRIVING',
+        optimizeWaypoints: false 
+    }, (res, stat) => {
         if (stat === 'OK') {
             mapDiv.style.display = 'block';
             drGo.setMap(map);
