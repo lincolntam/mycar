@@ -1,13 +1,14 @@
 let map, ds, drGo, drBack;
 let returnMode = false;
 
-// 2026 隧道費率邏輯
 const TUNNEL_DATA = [
-    { id: "whc", name: "西隧", loc: "Western Harbour Crossing", match: "Island|Central|West|香港|中環|西環", type: "cross", toll: "h" },
-    { id: "cht", name: "紅隧", loc: "Cross-Harbour Tunnel", match: "Island|Kowloon|Central|香港|尖沙咀|灣仔", type: "cross", toll: "h" },
-    { id: "ehc", name: "東隧", loc: "Eastern Harbour Crossing", match: "Island|East|Kwun Tong|香港|觀塘|鰂魚涌", type: "cross", toll: "h" },
-    { id: "tlt", name: "大欖", loc: "Tai Lam Tunnel", match: "Yuen Long|Tuen Mun|NT|元朗|屯門|天水圍", type: "hill", toll: "tlt" },
-    { id: "lrt", name: "獅子山", loc: "Lion Rock Tunnel", match: "Sha Tin|Tai Po|Kowloon|沙田|大埔|九龍", type: "hill", toll: 8 }
+    { id: "whc", name: "西隧", loc: "Western Harbour Crossing", match: "Island|Central|West|香港|中環|西環", toll: "h" },
+    { id: "cht", name: "紅隧", loc: "Cross-Harbour Tunnel", match: "Island|Kowloon|Central|香港|尖沙咀|灣仔", toll: "h" },
+    { id: "ehc", name: "東隧", loc: "Eastern Harbour Crossing", match: "Island|East|Kwun Tong|香港|觀塘|鰂魚涌", toll: "h" },
+    { id: "tlt", name: "大欖", loc: "Tai Lam Tunnel", match: "Yuen Long|Tuen Mun|NT|元朗|屯門|天水圍", toll: "tlt" },
+    { id: "lrt", name: "獅子山", loc: "Lion Rock Tunnel", match: "Sha Tin|Tai Po|Kowloon|沙田|大埔|九龍", toll: 8 },
+    { id: "ent", name: "尖山", loc: "Eagle's Nest Tunnel", match: "Sha Tin|Kowloon|West|沙田|長沙灣|荔枝角", toll: 8 },
+    { id: "tpr", name: "大埔道", loc: "Tai Po Road Piper's Hill", match: "Sha Tin|Tai Po|Sham Shui Po|大埔道", toll: 0 }
 ];
 
 function initApp() {
@@ -45,13 +46,11 @@ function getToll(loc, targetDate) {
     if (!data) return 0;
     const h = targetDate.getHours() + targetDate.getMinutes()/60;
 
-    // 三隧分流 (2026)
     if (data.toll === "h") {
         if ((h >= 7.5 && h < 10.25) || (h >= 16.5 && h < 19)) return 60;
         if (h >= 10.25 && h < 16.5) return 30;
         return 20;
     }
-    // 大欖 (2026 政府接管方案)
     if (data.toll === "tlt") {
         if ((h >= 7.5 && h < 9.5) || (h >= 17.5 && h < 19)) return 45;
         return 18;
@@ -59,23 +58,39 @@ function getToll(loc, targetDate) {
     return data.toll;
 }
 
-function toggleReturn() {
-    returnMode = !returnMode;
-    document.getElementById('retBtn').classList.toggle('active', returnMode);
-    document.getElementById('backTunnelSection').classList.toggle('hidden', !returnMode);
-    calculate();
+function smartFilterTunnels() {
+    const showAll = document.getElementById('show-all-tunnels').checked;
+    const inputs = document.querySelectorAll('.node-input');
+    const combined = Array.from(inputs).map(i => i.value.toLowerCase()).join(" ");
+    
+    document.querySelectorAll('.tunnel-grid .t-btn').forEach(btn => {
+        const data = TUNNEL_DATA.find(d => d.loc === btn.getAttribute('data-loc'));
+        if (showAll) {
+            btn.classList.add('visible');
+        } else {
+            const isMatched = data.match.toLowerCase().split('|').some(term => combined.includes(term));
+            if (isMatched) btn.classList.add('visible');
+            else btn.classList.remove('visible', 'active');
+        }
+    });
 }
 
 async function calculate() {
     const inputs = document.querySelectorAll('.node-input');
     const locs = Array.from(inputs).map(i => i.value).filter(v => v.length > 2);
-    if (locs.length < 2) return;
-
-    const time = new Date(); // 可串接 start-time
     const mapDiv = document.getElementById('map');
-    if (!map) map = new google.maps.Map(mapDiv, { zoom: 12, center: { lat: 22.3, lng: 114.1 }, disableDefaultUI: true });
 
-    drGo.setMap(map);
+    if (locs.length < 2) {
+        mapDiv.style.display = 'none';
+        return;
+    }
+
+    if (!map) map = new google.maps.Map(mapDiv, { zoom: 12, center: { lat: 22.3, lng: 114.1 }, disableDefaultUI: true, styles: [{stylers:[{invert_lightness:true}]}] });
+
+    const time = new Date();
+    const timeVal = document.getElementById('start-time').value;
+    if (timeVal) { const [hrs, mins] = timeVal.split(':'); time.setHours(hrs, mins); }
+
     let totalToll = 0;
     const tunnelWays = Array.from(document.querySelectorAll('#goTunnels .active')).map(b => {
         totalToll += getToll(b.getAttribute('data-loc'), time);
@@ -84,6 +99,8 @@ async function calculate() {
 
     ds.route({ origin: locs[0], destination: locs[locs.length-1], waypoints: tunnelWays, travelMode: 'DRIVING' }, (res, stat) => {
         if (stat === 'OK') {
+            mapDiv.style.display = 'block';
+            drGo.setMap(map);
             drGo.setDirections(res);
             const km = res.routes[0].legs.reduce((a, b) => a + b.distance.value, 0) / 1000;
             const sec = res.routes[0].legs.reduce((a, b) => a + b.duration.value, 0);
@@ -100,4 +117,25 @@ function updateUI(km, toll, sec) {
     document.getElementById('t-fee').innerText = "$" + toll;
     document.getElementById('e-cost').innerText = "$" + energy.toFixed(1);
     document.getElementById('total').innerText = (energy + toll).toFixed(1);
+}
+
+function addNode() {
+    const container = document.getElementById('nodes-container');
+    const div = document.createElement('div');
+    div.className = 'input-group';
+    div.innerHTML = `<input class="node-input" placeholder="中途站" autocomplete="off"><span class="clear-btn" onclick="removeNode(this)">✕</span>`;
+    container.appendChild(div);
+    bindAutocomplete(div.querySelector('.node-input'));
+}
+
+function removeNode(btn) {
+    btn.parentElement.remove();
+    calculate();
+}
+
+function toggleReturn() {
+    returnMode = !returnMode;
+    document.getElementById('retBtn').classList.toggle('active', returnMode);
+    document.getElementById('backTunnelSection').classList.toggle('hidden', !returnMode);
+    calculate();
 }

@@ -18,18 +18,18 @@
 
 <div class="app-container">
     <main class="content">
-        <section class="card shadow-sm">
+        <section class="card">
             <div class="card-header">
                 <span class="material-icons">place</span>
                 <label>1. 行程節點 (Nodes)</label>
             </div>
             <div id="nodes-container">
                 <div class="input-group">
-                    <input class="node-input" placeholder="由哪裡出發？" autocomplete="off">
+                    <input class="node-input" id="origin" placeholder="由哪裡出發？" autocomplete="off">
                     <span class="clear-btn" onclick="removeNode(this)">✕</span>
                 </div>
                 <div class="input-group">
-                    <input class="node-input" placeholder="目的地在哪？" autocomplete="off">
+                    <input class="node-input" id="destination" placeholder="目的地在哪？" autocomplete="off">
                     <span class="clear-btn" onclick="removeNode(this)">✕</span>
                 </div>
             </div>
@@ -45,7 +45,7 @@
                 <label>2. 偏好設定 (Settings)</label>
             </div>
             <div class="setting-item">
-                <span>時間</span>
+                <span>出發時間</span>
                 <input type="time" id="start-time" onchange="calculate()">
             </div>
             <div class="setting-item">
@@ -103,7 +103,7 @@
     </footer>
 </div>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_KEY&libraries=places&callback=initApp" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBrlGmF4KTgFE8TeZyntoyaxxc6Qq0e7jY&libraries=places&callback=initApp" async defer></script>
 <script src="app.js"></script>
 </body>
 </html>

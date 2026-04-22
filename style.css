@@ -13,45 +13,36 @@ body {
     color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     margin: 0; padding: 0;
+    overflow-x: hidden;
 }
 
-/* 🚀 背景圖樣式 */
 .app-banner {
-    width: 100%;
-    height: 220px;
-    background-image: url('https://i.pinimg.com/1200x/3c/4e/59/3c4e5933055e29132870878a867a568e.jpg'); /* 請更換為你的圖片檔案 */
+    width: 100%; height: 220px;
+    background-image: url('banner.jpg');
     background-size: cover;
     background-position: center;
     position: relative;
 }
 
 .banner-overlay {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
+    position: absolute; bottom: 0; left: 0; right: 0;
     padding: 40px 20px 30px;
     background: linear-gradient(to top, var(--bg), transparent);
 }
 
-.banner-overlay h1 { font-size: 26px; margin: 0; font-weight: 800; }
-.banner-overlay p { font-size: 14px; color: var(--text-dim); margin: 5px 0 0; }
-
 .app-container { max-width: 500px; margin: -20px auto 0; position: relative; z-index: 2; }
 .content { padding: 0 16px; }
 
-/* 卡片 */
 .card {
-    background: var(--card);
-    border-radius: 18px;
-    padding: 18px;
-    margin-bottom: 12px;
+    background: var(--card); border-radius: 18px;
+    padding: 18px; margin-bottom: 12px;
     border: 1px solid var(--border);
 }
 
 .card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-.card-header label { font-size: 11px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
+.card-header label { font-size: 11px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; }
 .card-header .material-icons { font-size: 16px; color: var(--primary); }
 
-/* 輸入與按鈕 */
 .input-group { position: relative; margin-bottom: 8px; }
 .node-input {
     width: 100%; background: #1C1C1E; border: 1px solid var(--border); border-radius: 12px;
@@ -65,7 +56,6 @@ body {
     display: flex; align-items: center; justify-content: center; gap: 4px;
 }
 
-/* 設定項目 */
 .setting-item {
     display: flex; justify-content: space-between; align-items: center;
     padding: 10px 0; border-bottom: 1px solid #222;
@@ -75,16 +65,16 @@ body {
     background: transparent; border: none; color: var(--blue); font-size: 15px; font-weight: 600; text-align: right;
 }
 
-/* 隧道按鈕 */
 .tunnel-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
 .t-btn {
+    display: none; /* 預設智能隱藏 */
     background: #1C1C1E; border: 1px solid var(--border); padding: 10px 2px;
     border-radius: 8px; color: #666; font-size: 11px; text-align: center; cursor: pointer;
 }
+.t-btn.visible { display: block; }
 .t-btn.active { background: #2C1014; border-color: var(--primary); color: var(--primary); font-weight: bold; }
 
-/* 數據展示 */
-.stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 15px; }
 .stat-card {
     background: var(--card); padding: 14px; border-radius: 14px;
     border: 1px solid var(--border); text-align: center;
@@ -92,14 +82,10 @@ body {
 .stat-card span { display: block; font-size: 11px; color: var(--text-dim); margin-bottom: 4px; }
 .stat-card b { font-size: 17px; }
 
-/* 底部導航列 (毛玻璃) */
 .bottom-nav {
     position: fixed; bottom: 0; left: 0; right: 0;
-    background: rgba(20, 20, 20, 0.85);
-    backdrop-filter: blur(15px);
-    border-top: 1px solid var(--border);
-    padding: 16px 16px 32px;
-    z-index: 100;
+    background: rgba(20, 20, 20, 0.85); backdrop-filter: blur(15px);
+    border-top: 1px solid var(--border); padding: 16px 16px 32px; z-index: 100;
 }
 .nav-content { max-width: 468px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
 .price-val { font-size: 32px; font-weight: 800; color: var(--primary); }
@@ -109,6 +95,10 @@ body {
     padding: 14px 28px; border-radius: 12px; font-weight: bold; font-size: 15px;
 }
 
-#map { height: 280px; border-radius: 16px; margin-bottom: 12px; border: 1px solid var(--border); }
+#map { 
+    height: 280px; border-radius: 16px; margin-bottom: 12px; 
+    border: 1px solid var(--border); display: none; /* 初始隱藏 */
+}
+
 .hidden { display: none; }
 .checkbox-row { margin-top: 12px; display: flex; align-items: center; gap: 8px; font-size: 12px; color: #888; }
