@@ -8,7 +8,7 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="apple-touch-icon" href="favicon.ico">
 
-    <link rel="stylesheet" href="style.css?v=0.33.8">
+    <link rel="stylesheet" href="style.css?v=0.33.9">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
@@ -100,27 +100,29 @@
 
     <footer class="bottom-nav">
         <div class="nav-content">
-            <div class="savings-container">
-                <div class="savings-tag">
-                    <span class="material-icons">leaf_spark</span>
-                    節省燃油開支
+            <div class="nav-spacer"></div>
+
+            <div class="total-display-group">
+                <small class="label-top">總預算估算</small>
+                <div class="main-currency">
+                    HK$ <span id="total">0.0</span>
                 </div>
-                <div class="savings-val" id="savings">$0.0</div>
+                <div class="savings-bottom">
+                    <span class="material-icons">leaf_spark</span>
+                    節省燃油開支 <span id="savings">$0.0</span>
+                </div>
             </div>
 
-            <div class="total-price">
-                <small>總預算估算</small>
-                <div class="price-val">HK$ <span id="total">0.0</span></div>
+            <div class="nav-actions">
+                <button class="primary-btn" onclick="calculate()">更新</button>
             </div>
-
-            <button class="primary-btn" onclick="calculate()">更新</button>
         </div>
     </footer>
 </div>
 
-<div class="version-tag">(L)TravelCal v0.33.8</div>
+<div class="version-tag">(L)TravelCal v0.33.9</div>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBrlGmF4KTgFE8TeZyntoyaxxc6Qq0e7jY&libraries=places&callback=initApp" async defer></script>
-<script src="app.js?v=0.33.8"></script>
+<script src="app.js?v=0.33.9"></script>
 </body>
 </html>

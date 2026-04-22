@@ -58,28 +58,29 @@ body { background-color: var(--bg); color: var(--text); font-family: -apple-syst
 .stat-card span { display: block; font-size: 10px; color: var(--text-dim); text-transform: uppercase; }
 .stat-card b { font-size: 18px; }
 
+/* 底部導航垂直佈局 */
 .bottom-nav {
     position: fixed; bottom: 0; left: 0; right: 0;
-    background: rgba(20, 20, 20, 0.95); backdrop-filter: blur(20px);
-    border-top: 1px solid var(--border); padding: 12px 16px 40px; z-index: 100;
+    background: rgba(10, 10, 10, 0.98); backdrop-filter: blur(25px);
+    border-top: 1px solid var(--border); padding: 10px 16px 35px; z-index: 100;
 }
-.nav-content { 
-    max-width: 460px; margin: 0 auto; 
-    display: flex; justify-content: space-between; align-items: center; 
-    gap: 10px;
-}
-.savings-container { flex: 1; text-align: left; }
-.savings-tag { font-size: 10px; color: var(--text-dim); display: flex; align-items: center; gap: 3px; text-transform: uppercase; }
-.savings-tag .material-icons { font-size: 12px; color: var(--savings); }
-.savings-val { font-size: 16px; color: var(--savings); font-weight: 700; margin-top: 2px; }
+.nav-content { max-width: 460px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+.nav-spacer { flex: 1; } 
+.nav-actions { flex: 1; text-align: right; }
 
-.total-price { flex: 1.5; text-align: center; }
-.total-price small { font-size: 10px; color: var(--text-dim); text-transform: uppercase; display: block; }
-.price-val { font-size: 26px; font-weight: 800; color: var(--primary); }
+.total-display-group {
+    flex: 2; display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.label-top { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+.main-currency { font-size: 28px; font-weight: 900; color: var(--primary); line-height: 1.1; }
+.savings-bottom { 
+    font-size: 11px; color: var(--savings); display: flex; align-items: center; gap: 4px; margin-top: 2px;
+}
+.savings-bottom .material-icons { font-size: 13px; }
 
 .primary-btn { 
-    padding: 12px 20px; background: var(--primary); color: white; 
-    border: none; border-radius: 12px; font-weight: bold; font-size: 14px;
+    padding: 10px 18px; background: var(--primary); color: white; 
+    border: none; border-radius: 10px; font-weight: bold; font-size: 14px;
 }
 
 .version-tag { 
