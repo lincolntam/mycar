@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tesla Smart Route HK</title>
-    <link rel="stylesheet" href="style.css?v=0.19">
+    <link rel="stylesheet" href="style.css?v=0.21">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
@@ -49,7 +49,7 @@
             <div class="settings-group">
                 <div class="setting-item">
                     <span>出發時間</span>
-                    <input type="time" id="start-time" onchange="calculate()">
+                    <input type="datetime-local" id="start-time" onchange="calculate()">
                 </div>
                 <div class="setting-item">
                     <span>充電方式</span>
@@ -79,10 +79,10 @@
         <div id="map"></div>
 
         <section class="stats-grid">
-            <div class="stat-card"><span>里程</span><b id="km">0.0 km</b></div>
-            <div class="stat-card"><span>時間</span><b id="duration">0 min</b></div>
-            <div class="stat-card"><span>隧道費</span><b id="t-fee">$0</b></div>
-            <div class="stat-card"><span>充電費</span><b id="e-cost">$0</b></div>
+            <div class="stat-card"><span>總里程</span><b id="km">0.0 km</b></div>
+            <div class="stat-card"><span>總時間</span><b id="duration">0 min</b></div>
+            <div class="stat-card"><span>總隧道費</span><b id="t-fee">$0</b></div>
+            <div class="stat-card"><span>總充電費</span><b id="e-cost">$0</b></div>
         </section>
         <div style="height: 140px;"></div>
     </main>
@@ -98,9 +98,9 @@
     </footer>
 </div>
 
-<div class="version-tag">v0.19</div>
+<div class="version-tag">v0.21</div>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBrlGmF4KTgFE8TeZyntoyaxxc6Qq0e7jY&libraries=places&callback=initApp" async defer></script>
-<script src="app.js?v=0.19"></script>
+<script src="app.js?v=0.21"></script>
 </body>
 </html>
