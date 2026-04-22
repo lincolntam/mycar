@@ -1,22 +1,18 @@
-/* (L)TravelCal - Version 0.32 
-   - Fixed Datetime Layout 
-   - Dynamic Map Visibility
-   - Multi-Renderer Support
-*/
+/* (L)TravelCal - Version 0.33 */
 
 let map, ds, drGo, drBack;
 let returnMode = false;
 
 const TUNNEL_DATA = [
-    { id: "tlt", name: "大欖", loc: "Tai Lam Tunnel", match: "Yuen Long|Tuen Mun|元朗|屯門", toll: "tlt", lat: 22.41 },
-    { id: "smt", name: "城門", loc: "Shing Mun Tunnels", match: "Tsuen Wan|Sha Tin|葵涌|荃灣|沙田", toll: 5, lat: 22.38 },
-    { id: "tct", name: "大老山", loc: "Tate's Cairn Tunnel", match: "Sha Tin|Diamond Hill|Kwun Tong|沙田|馬鞍山|觀塘", toll: 15, lat: 22.36 },
-    { id: "tpr", name: "大埔道", loc: "Tai Po Road Piper's Hill", match: "Sha Tin|Tai Po|Sham Shui Po|大埔道", toll: 0, lat: 22.34 },
-    { id: "lrt", name: "獅子山", loc: "Lion Rock Tunnel", match: "Sha Tin|Tai Po|Kowloon|沙田|九龍", toll: 8, lat: 22.33 },
-    { id: "ent", name: "尖山", loc: "Eagle's Nest Tunnel", match: "Sha Tin|Kowloon|West|沙田|長沙灣|荔枝角", toll: 8, lat: 22.33 },
-    { id: "whc", name: "西隧", loc: "Western Harbour Crossing", match: "Island|Central|West|香港|中環|西環", toll: "h", lat: 22.29 },
-    { id: "cht", name: "紅隧", loc: "Cross-Harbour Tunnel", match: "Island|Kowloon|Central|香港|尖沙咀|灣仔", toll: "h", lat: 22.29 },
-    { id: "ehc", name: "東隧", loc: "Eastern Harbour Crossing", match: "Island|East|Kwun Tong|香港|觀塘|鰂魚涌", toll: "h", lat: 22.29 }
+    { id: "whc", name: "西隧", loc: "Western Harbour Crossing", toll: "h", lat: 22.29 },
+    { id: "cht", name: "紅隧", loc: "Cross-Harbour Tunnel", toll: "h", lat: 22.29 },
+    { id: "ehc", name: "東隧", loc: "Eastern Harbour Crossing", toll: "h", lat: 22.29 },
+    { id: "tlt", name: "大欖", loc: "Tai Lam Tunnel", toll: "tlt", lat: 22.41 },
+    { id: "smt", name: "城門", loc: "Shing Mun Tunnels", toll: 5, lat: 22.38 },
+    { id: "tct", name: "大老山", loc: "Tate's Cairn Tunnel", toll: 15, lat: 22.36 },
+    { id: "tpr", name: "大埔道", loc: "Tai Po Road Piper's Hill", toll: 0, lat: 22.34 },
+    { id: "lrt", name: "獅子山", loc: "Lion Rock Tunnel", toll: 8, lat: 22.33 },
+    { id: "ent", name: "尖山", loc: "Eagle's Nest Tunnel", toll: 8, lat: 22.33 }
 ];
 
 function initApp() {
@@ -24,7 +20,6 @@ function initApp() {
     drGo = new google.maps.DirectionsRenderer({ polylineOptions: { strokeColor: "#E3193F", strokeWeight: 6 } });
     drBack = new google.maps.DirectionsRenderer({ polylineOptions: { strokeColor: "#1976D2", strokeWeight: 5 }, suppressMarkers: true });
     
-    // 初始化日期
     const now = new Date();
     const offset = now.getTimezoneOffset() * 60000;
     document.getElementById('start-time').value = (new Date(now - offset)).toISOString().slice(0, 16);
@@ -37,7 +32,7 @@ function initApp() {
 
 function bindAutocomplete(inp) {
     const ac = new google.maps.places.Autocomplete(inp, { componentRestrictions: { country: "hk" } });
-    ac.addListener('place_changed', () => { smartFilterTunnels(); calculate(); });
+    ac.addListener('place_changed', () => { calculate(); });
 }
 
 function renderButtons(id, prefix) {
@@ -73,28 +68,28 @@ function getToll(loc, targetDate) {
     return data.toll;
 }
 
-function smartFilterTunnels() {
-    const showAll = document.getElementById('show-all-tunnels').checked;
-    const combined = Array.from(document.querySelectorAll('.node-input')).map(i => i.value.toLowerCase()).join(" ");
-    document.querySelectorAll('.t-btn').forEach(btn => {
-        const data = TUNNEL_DATA.find(d => d.loc === btn.getAttribute('data-loc'));
-        if (showAll || data.match.toLowerCase().split('|').some(term => combined.includes(term))) btn.classList.add('visible');
-        else btn.classList.remove('visible', 'active');
-    });
-}
-
 async function calculate() {
     const inputs = document.querySelectorAll('.node-input');
     const locs = Array.from(inputs).map(i => i.value).filter(v => v.length > 2);
+    const condElements = document.querySelectorAll('.conditional-show');
     const mapEl = document.getElementById('map');
 
     if (locs.length < 2) {
+        condElements.forEach(el => el.style.display = 'none');
         mapEl.classList.remove('active');
         return;
     }
 
-    // ✅ 偵測到地點，激活並渲染地圖
+    // 顯示隱藏區域
+    condElements.forEach(el => {
+        if (el.classList.contains('return-only')) {
+            el.style.display = returnMode ? 'block' : 'none';
+        } else {
+            el.style.display = 'block';
+        }
+    });
     mapEl.classList.add('active');
+
     if (!map) {
         map = new google.maps.Map(mapEl, { 
             zoom: 12, center: { lat: 22.3, lng: 114.1 }, 
@@ -103,9 +98,7 @@ async function calculate() {
         });
     }
 
-    // 強制更新地圖尺寸以防黑塊
     setTimeout(() => google.maps.event.trigger(map, 'resize'), 100);
-
     drGo.setMap(null); drBack.setMap(null);
 
     const goTime = new Date(document.getElementById('start-time').value);
@@ -113,7 +106,6 @@ async function calculate() {
     const go = await getRouteData(locs[0], locs[locs.length-1], goSelected, goTime);
 
     let totalKm = go.km, totalToll = go.toll, totalSec = go.sec;
-
     if (go.raw) { drGo.setMap(map); drGo.setDirections(go.raw); }
 
     if (returnMode) {
@@ -163,7 +155,6 @@ function addNode() {
 function toggleReturn() {
     returnMode = !returnMode;
     document.getElementById('retBtn').classList.toggle('active', returnMode);
-    document.querySelectorAll('.return-only').forEach(el => el.style.display = returnMode ? 'block' : 'none');
     calculate();
 }
 

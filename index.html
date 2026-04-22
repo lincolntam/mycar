@@ -8,7 +8,7 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="apple-touch-icon" href="favicon.ico">
 
-    <link rel="stylesheet" href="style.css?v=0.31">
+    <link rel="stylesheet" href="style.css?v=0.33">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
@@ -55,7 +55,7 @@
                     <span>去程時間</span>
                     <input type="datetime-local" id="start-time" onchange="calculate()">
                 </div>
-                <div class="setting-item return-only" style="display: none;">
+                <div class="setting-item return-only conditional-show">
                     <span>回程時間</span>
                     <input type="datetime-local" id="return-time" onchange="calculate()">
                 </div>
@@ -68,13 +68,9 @@
                     </select>
                 </div>
             </div>
-            <div class="checkbox-row">
-                <input type="checkbox" id="show-all-tunnels" onchange="smartFilterTunnels()"> 
-                <span>顯示全港所有隧道 (手動模式)</span>
-            </div>
         </section>
 
-        <section class="card">
+        <section class="card conditional-show">
             <div class="card-header">
                 <span class="material-icons">directions_car</span>
                 <label>3. 去程隧道選擇 (Outbound)</label>
@@ -82,7 +78,7 @@
             <div class="tunnel-grid" id="goTunnels"></div>
         </section>
 
-        <section class="card return-only" style="display: none;">
+        <section class="card conditional-show return-only">
             <div class="card-header">
                 <span class="material-icons">settings_backup_restore</span>
                 <label>4. 回程隧道選擇 (Return)</label>
@@ -116,9 +112,9 @@
     </footer>
 </div>
 
-<div class="version-tag">(L)TravelCal v0.31</div>
+<div class="version-tag">(L)TravelCal v0.33</div>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBrlGmF4KTgFE8TeZyntoyaxxc6Qq0e7jY&libraries=places&callback=initApp" async defer></script>
-<script src="app.js?v=0.31"></script>
+<script src="app.js?v=0.33"></script>
 </body>
 </html>
